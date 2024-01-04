@@ -87,7 +87,7 @@ const NumberInput = () => {
   return (
     <>
       <div className="flex flex-col justify-center items-center h-screen bg-red-200 border-8 border-red-600">
-        <h1 className="text-5xl text-green-600 text-center font-bold mb-4 animate-bounce absolute md:top-20 top-14">Play My Game</h1>
+        <h1 className="text-5xl text-green-600 text-center font-bold mb-4 animate-bounce absolute md:top-20 top-14">Win This Game</h1>
         <div className="bg-green-300 flex flex-col gap-20 md:gap-40 items-center p-8 rounded-lg shadow-md w-3/4 md:w-1/2 h-1/2">
           <div className="">
             <div className="md:flex gap-2">
