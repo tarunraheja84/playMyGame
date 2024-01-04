@@ -1,113 +1,114 @@
-import Image from 'next/image'
+'use client'
+import { useState } from 'react';
 
-export default function Home() {
+const NumberInput = () => {
+  const [output, setOutput] = useState('');
+  const [message, setMessage] = useState('');
+
+  function reduceToNonZero(A: number[]): [number, number] {
+    let xorResult: number = 0;
+
+    // Calculate the XOR of all elements in the array
+    for (let i = 0; i < A.length; i++) {
+      xorResult ^= A[i];
+    }
+
+    // If the XOR of all elements is already non-zero, return the index of any element and convert it to 0
+    if (xorResult !== 0) {
+      for (let i = 0; i < A.length; ++i) {
+        if ((A[i] ^ xorResult) < A[i]) {
+          return [i, A[i] ^ xorResult];
+        }
+      }
+    }
+
+    // If XOR of all elements is zero, return the index of the first element and convert it to 1
+    for (let i = 0; i < A.length; ++i) {
+      if (A[i] > 0 && A[i]!=1) {
+        return [i, 1];
+      }
+    }
+
+    // If all elements are already 0, return any index and 0
+    return [0, A[0]];
+  }
+
+  const calculate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const numbers=event.target.value;
+    const numbersArray = numbers.split(',').map(Number);
+    const k: [number, number] = reduceToNonZero(numbersArray);
+    
+    let ans: number[] = [];
+    for (let i = 0; i < numbersArray.length; i++) {
+      if (k[0] === i) {
+        ans.push(k[1]);
+    } else {
+      ans.push(numbersArray[i]);
+    }
+  }
+
+  let s: string = "";
+  let message:string ="";
+
+  if(numbersArray.length===0){
+    message="Invalid Input";
+  }
+  
+  let count:number=0;
+  for (let i = 0; i < ans.length; i++) {
+    if(ans[i]===numbersArray[i]){
+      count++;
+    }
+
+    if(ans[i])
+      s += ans[i].toString();
+
+    if (ans[i] && i !== ans.length - 1)
+      s += ", ";
+
+    if(Number.isNaN(numbersArray[i]) || numbersArray[i]<0){
+      message="Invalid Input";
+      break;
+    }
+  }
+
+  if(s=="" && !message.length){
+    message="Congratulations, you won!";
+  }
+
+  if((count===numbersArray.length || s===", ") && !message.length){
+    message="You can never win";
+  }
+
+    setMessage(message);
+    setOutput(s);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <div className="flex flex-col justify-center items-center h-screen bg-red-200 border-8 border-red-600">
+        <h1 className="text-5xl text-green-600 text-center font-bold mb-4 animate-bounce absolute md:top-20 top-14">Play My Game</h1>
+        <div className="bg-green-300 flex flex-col gap-20 md:gap-40 items-center p-8 rounded-lg shadow-md w-3/4 md:w-1/2 h-1/2">
+          <div className="">
+            <div className="md:flex gap-2">
+              <label className="my-auto md:text-nowrap font-medium text-red-400">
+                Enter numbers (comma-separated):
+              </label>
+              <input
+                type="text"
+                onChange={calculate}
+                className="block w-full border-gray-300 rounded-md p-2 focus:outline-none mt-2 md:mt-0"
+                placeholder="e.g. 1, 2, 3, 4"
+              />
+            </div>
+          </div>
+          <div className="md:text-3xl text-2xl font-bold text-red-400">
+          {message.length>0 ? <div className="">{message}</div> : output.length>0 ? <div className="">My Numbers: <span className="text-red-600">{output}</span></div>: ""}
+          </div>
         </div>
       </div>
+    </>
+  );
+};
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default NumberInput;
