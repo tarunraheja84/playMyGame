@@ -1,7 +1,7 @@
 # winThisGame
 
 winThisGame is a React-based application that helps users win a specific 2-player game by following a secret algorithm. The game involves players taking turns to either remove a number from a list or decrease a number to any extent (but not below 1). The player left with no numbers to remove or decrease loses.
-12345
+
 ## Features
 
 - Interactive interface.
